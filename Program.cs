@@ -11,7 +11,6 @@ class HighLowGame
         while (playAgain)
         {
             // Introduce the game
-
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine("WELCOME TO THE HIGH-LOW G1 GUESSING GAME!\n");
@@ -26,7 +25,7 @@ class HighLowGame
             while (braveResponse != "y" && braveResponse != "n")
             {
                 Console.Write("\nHi " + username + ", are you brave enough to play? (y/n): ");
-                braveResponse = Console.ReadLine().ToLower(); // Convert to lowercase for case-insensitive comparison
+                braveResponse = Console.ReadLine().ToLower(); // Convert to lowercase
 
                 if (braveResponse != "y" & braveResponse != "n")
                 {
@@ -91,7 +90,6 @@ class HighLowGame
                         attempts++;
 
                         // Check if the guess is too high, too low, or correct
-
                         if (userGuess < mysteryNumber)
                         {
                             Console.ForegroundColor = ConsoleColor.Blue;
@@ -119,12 +117,11 @@ class HighLowGame
                 }
 
                 // Ask the player if he wants to play again and validate if the input is valid
-
                 string playAgainInput = "";
                 while (playAgainInput != "y" && playAgainInput != "n")
                 {
                     Console.Write("\n" + username + ", do you want to play again? (y/n): ");
-                    playAgainInput = Console.ReadLine().ToLower(); // Convert to lowercase for case-insensitive comparison
+                    playAgainInput = Console.ReadLine().ToLower(); // Convert to lowercase
 
                     if (playAgainInput != "y" & playAgainInput != "n")
                     {
