@@ -116,7 +116,7 @@ class HighLowGame
                     }
                 }
 
-                // Ask the player if he wants to play again and validate if the input is valid
+                // Ask the player if he wants to play again and validate if the response is valid
                 string playAgainInput = "";
                 while (playAgainInput != "y" && playAgainInput != "n")
                 {
@@ -132,7 +132,8 @@ class HighLowGame
                 if (playAgainInput == "n")
                 {
                     playAgain = false;
-                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!");
+                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!" +
+                        "");
                 }
             }
             while (playAgain); // Loop again if the player wants to play again
