@@ -35,7 +35,7 @@ class HighLowGame
 
             if (braveResponse == "n")
             {
-                Console.WriteLine("Ok! Maybe next time! Goodbye " + username + ".");
+                Console.WriteLine("Ok! Maybe next time! Goodbye " + username + ".\nComing soon a multiplayer version!");
                 break; // Exit the game if the player is not brave enough
             }
 
@@ -132,7 +132,7 @@ class HighLowGame
                 if (playAgainInput == "n")
                 {
                     playAgain = false;
-                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.");
+                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!");
                 }
             }
             while (playAgain); // Loop again if the player wants to play again
