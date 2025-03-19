@@ -132,8 +132,7 @@ class HighLowGame
                 if (playAgainInput == "n")
                 {
                     playAgain = false;
-                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!" +
-                        "");
+                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!");
                 }
             }
             while (playAgain); // Loop again if the player wants to play again
