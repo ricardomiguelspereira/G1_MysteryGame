@@ -107,7 +107,7 @@ class HighLowGame
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine($"\nCorrect! The mystery number was {mysteryNumber}.");
                             Console.ResetColor();
-                            Console.WriteLine(username + $", it took you {attempts} attempts to guess it.");
+                            Console.WriteLine(username + $", it took you {attempts} attempt(s) to guess it.");
                         }
                     }
                     else
