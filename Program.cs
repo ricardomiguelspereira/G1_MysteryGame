@@ -116,7 +116,7 @@ class HighLowGame
                     }
                 }
 
-                // Ask the player if he wants to play again and validate if the input is valid
+                // Ask the player if he wants to play again and validate if the response is valid
                 string playAgainInput = "";
                 while (playAgainInput != "y" && playAgainInput != "n")
                 {
