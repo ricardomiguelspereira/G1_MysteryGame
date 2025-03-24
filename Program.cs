@@ -1,8 +1,17 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 class HighLowGame
 {
+    // Function to display Foreground Colors
+    private static void ShowMessageToPlayer(ConsoleColor color, string msg)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine(msg);
+        Console.ResetColor();
+    }
+
     static void Main()
     {
         bool playAgain = true;
@@ -12,11 +21,9 @@ class HighLowGame
         {
             // Introduce the game
             Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("WELCOME TO THE HIGH-LOW G1 GUESSING GAME!\n");
-            Console.ResetColor();
+            ShowMessageToPlayer(ConsoleColor.Black, "WELCOME TO THE HIGH-LOW G1 GUESSING GAME!\n");
 
-            // Ask the player the name
+            //Ask the player name
             Console.WriteLine("What's your name, please?");
             string username = Console.ReadLine();
 
@@ -35,7 +42,7 @@ class HighLowGame
 
             if (braveResponse == "n")
             {
-                Console.WriteLine("Ok! Maybe next time! Goodbye " + username + ".\nComing soon a multiplayer version!");
+                Console.WriteLine("\nOk! Maybe next time! Goodbye " + username + ".\nComing soon a multiplayer version!");
                 break; // Exit the game if the player is not brave enough
             }
 
@@ -74,16 +81,12 @@ class HighLowGame
                         // Check if the guess is within the valid range
                         if (userGuess < minRange)
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine(username + $", your guess is below the minimum allowed. Please enter a number between {minRange} and {maxRange}.");
-                            Console.ResetColor();
+                            ShowMessageToPlayer(ConsoleColor.Yellow, username + $", your guess is below the minimum allowed. Please enter a number between {minRange} and {maxRange}.");
                             continue;
                         }
                         else if (userGuess > maxRange)
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine(username + $", your guess is above the maximum allowed. Please enter a number between {minRange} and {maxRange}.");
-                            Console.ResetColor();
+                            ShowMessageToPlayer(ConsoleColor.Yellow, username + $", your guess is above the maximum allowed. Please enter a number between {minRange} and {maxRange}.");
                             continue;
                         }
 
@@ -92,21 +95,15 @@ class HighLowGame
                         // Check if the guess is too high, too low, or correct
                         if (userGuess < mysteryNumber)
                         {
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.WriteLine("Too low! Try again.");
-                            Console.ResetColor();
+                            ShowMessageToPlayer(ConsoleColor.Blue, "Too low! Try again.");
                         }
                         else if (userGuess > mysteryNumber)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Too high! Try again.");
-                            Console.ResetColor();
+                            ShowMessageToPlayer(ConsoleColor.Red, "Too high! Try again.");
                         }
                         else
                         {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"\nCorrect! The mystery number was {mysteryNumber}.");
-                            Console.ResetColor();
+                            ShowMessageToPlayer(ConsoleColor.Green, $"\nCorrect! The mystery number was {mysteryNumber}.");
                             Console.WriteLine(username + $", it took you {attempts} attempt(s) to guess it.");
                         }
                     }
