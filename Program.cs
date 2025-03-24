@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Diagnostics.Eventing.Reader;
+using System.Runtime.Remoting.Lifetime;
 
-class HighLowGame
+class Program
 {
     // Function to display Foreground Colors
     private static void ShowMessageToPlayer(ConsoleColor color, string msg)
@@ -12,127 +13,180 @@ class HighLowGame
         Console.ResetColor();
     }
 
+    // Method to check if the input is a valid number and convert it
+    static bool IsValidNumber(string input, out int result)
+    {
+        bool isValid = int.TryParse(input, out result);
+        return isValid;
+    }
+
+    // Function to play the guessing game for one round
+    static void PlayGame(List<string> players, int minRange, int maxRange)
+    {
+        Random rand = new Random();
+        int mysteryNumber = rand.Next(minRange, maxRange + 1); // Random number within the defined range
+        bool gameWon = false;
+        int currentPlayerIndex = 0;
+
+        Console.WriteLine($"\nA new game has started! The mystery number is between {minRange} and {maxRange}.");
+        while (!gameWon)
+        {
+            string currentPlayer = players[currentPlayerIndex];
+            Console.WriteLine($"\n{currentPlayer}, it's your turn to guess.");
+
+            int playerGuess = -1;
+            bool validInput = false;
+
+            while (!validInput)
+            {
+                Console.Write("Enter your guess: ");
+                string input = Console.ReadLine();
+                validInput = int.TryParse(input, out playerGuess);
+
+                // Check if the player guess is whithin the defined range
+                if (playerGuess < minRange)
+                {
+                    ShowMessageToPlayer(ConsoleColor.Yellow, $"{currentPlayer}, your guess is below the minimum allowed. Please enter a number between {minRange} and {maxRange}.");
+                    validInput = false;
+                }
+                else if (playerGuess > maxRange)
+                {
+                    ShowMessageToPlayer(ConsoleColor.Yellow, $"{currentPlayer}, your guess is above the maximum allowed. Please enter a number between {minRange} and {maxRange}.");
+                    validInput = false;
+                }
+            }
+
+            // Check if the guess is correct
+            if (playerGuess == mysteryNumber)
+            {
+                ShowMessageToPlayer(ConsoleColor.Green, $"\nCongratulations {currentPlayer}, you've guessed the correct number!");
+                ShowMessageToPlayer(ConsoleColor.Green, $"The mystery number was {mysteryNumber}.");
+                gameWon = true;
+            }
+            else if (playerGuess < mysteryNumber)
+            {
+                ShowMessageToPlayer(ConsoleColor.Yellow, $"{currentPlayer}, too low! Try again.");
+            }
+            else
+            {
+                ShowMessageToPlayer(ConsoleColor.Yellow, $"{currentPlayer}, too high! Try again.");
+            }
+
+            // Move to the next player
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
+        }
+    }
+
     static void Main()
     {
-        bool playAgain = true;
+        // Game Presentation and Instructions
+        Console.BackgroundColor = ConsoleColor.White;
+        ShowMessageToPlayer(ConsoleColor.Black, " Welcome to the High-Low G1 Multiplayer Guessing Game! \n");
+        Console.ResetColor();
+        ShowMessageToPlayer(ConsoleColor.Blue, "Instructions:");
+        Console.WriteLine("In this game, each player will take turns guessing a mystery number.");
+        Console.WriteLine("The mystery number is randomly generated within a defined range.");
+        Console.WriteLine("Each player will have one guess per round, and they will be told if their guess is too low, too high, or correct.");
+        Console.WriteLine("The first player to guess the correct number wins the game.");
+        Console.WriteLine("Click any key to continue...");
+        Console.ReadLine();
 
-        // Game loop for playing multiple times
+        bool playAgain = true;
+        bool isValidInput = false;
+        int numberOfPlayers = 0;
+
+        // Start the game loop
         while (playAgain)
         {
-            // Introduce the game
-            Console.BackgroundColor = ConsoleColor.White;
-            ShowMessageToPlayer(ConsoleColor.Black, "WELCOME TO THE HIGH-LOW G1 GUESSING GAME!\n");
-
-            //Ask the player name
-            Console.WriteLine("What's your name, please?");
-            string username = Console.ReadLine();
-
             // Ask if user is brave enough yo play and validate if the input is valid or not
             string braveResponse = "";
             while (braveResponse != "y" && braveResponse != "n")
             {
-                Console.Write("\nHi " + username + ", are you brave enough to play? (y/n): ");
+                Console.Write("Are you brave enough to play? (y/n): ");
                 braveResponse = Console.ReadLine().ToLower(); // Convert to lowercase
 
                 if (braveResponse != "y" & braveResponse != "n")
                 {
-                    Console.WriteLine("Invalid input! Please enter 'y' or 'n'.");
+                    ShowMessageToPlayer(ConsoleColor.Yellow, "Invalid input! Please enter 'y' or 'n'.");
                 }
             }
 
             if (braveResponse == "n")
             {
-                Console.WriteLine("\nOk! Maybe next time! Goodbye " + username + ".\nComing soon a multiplayer version!");
+                Console.WriteLine("\nOk! Maybe next time! Goodbye.");
                 break; // Exit the game if the player is not brave enough
             }
 
-            // Game logic starts here
-            Random random = new Random();
-
-            // Game loop for multiple rounds
-            do
+            List<string> players = new List<string>();
+            // Ask if the player wants to play single-player or multiplayer
+            string modeChoice = "";
+            while (modeChoice != "s" && modeChoice != "m")
             {
-                // Randomly choose a range for the mystery number
-                int minRange = random.Next(1, 51);  // Random minimum between 1 and 50
-                int maxRange = random.Next(minRange + 1, 101);  // Random maximum, must be greater than minRange
+                Console.Write("\nDo you want to play in single-player or multiplayer mode? (s/m): ");
+                modeChoice = Console.ReadLine().ToLower();
 
-                // Generate a random number between the selected range
-                int mysteryNumber = random.Next(minRange, maxRange + 1);
-
-                // Variable to hold the user's guess
-                int userGuess = 0;
-
-                // Number of attempts the user has made
-                int attempts = 0;
-
-                // Display the range of numbers
-                Console.WriteLine($"\nThe mystery number is between {minRange} and {maxRange}. Try to guess it!");
-
-                // Game loop for guessing
-                while (userGuess != mysteryNumber)
+                if (modeChoice == "s")
                 {
-                    // Ask the user for their guess
-                    Console.Write(username + " enter your guess: ");
-                    string input = Console.ReadLine();
+                    // Single-player mode
+                    Console.Write("Enter your name: ");
+                    string playerName = Console.ReadLine();
+                    players.Add(playerName); // Only one player in single-player mode
+                }
+                else if (modeChoice == "m")
+                {
+                    // Multiplayer mode
 
-                    // Check if the input is a valid number
-                    if (int.TryParse(input, out userGuess))
+                    while (!isValidInput)
                     {
-                        // Check if the guess is within the valid range
-                        if (userGuess < minRange)
-                        {
-                            ShowMessageToPlayer(ConsoleColor.Yellow, username + $", your guess is below the minimum allowed. Please enter a number between {minRange} and {maxRange}.");
-                            continue;
-                        }
-                        else if (userGuess > maxRange)
-                        {
-                            ShowMessageToPlayer(ConsoleColor.Yellow, username + $", your guess is above the maximum allowed. Please enter a number between {minRange} and {maxRange}.");
-                            continue;
-                        }
+                        Console.Write("Enter the number of players: ");
+                        string input = Console.ReadLine();
 
-                        attempts++;
+                        // Check if the input is a valid number
+                        isValidInput = IsValidNumber(input, out numberOfPlayers);
 
-                        // Check if the guess is too high, too low, or correct
-                        if (userGuess < mysteryNumber)
+                        if (!isValidInput || numberOfPlayers < 1)
                         {
-                            ShowMessageToPlayer(ConsoleColor.Blue, "Too low! Try again.");
-                        }
-                        else if (userGuess > mysteryNumber)
-                        {
-                            ShowMessageToPlayer(ConsoleColor.Red, "Too high! Try again.");
-                        }
-                        else
-                        {
-                            ShowMessageToPlayer(ConsoleColor.Green, $"\nCorrect! The mystery number was {mysteryNumber}.");
-                            Console.WriteLine(username + $", it took you {attempts} attempt(s) to guess it.");
+                            Console.WriteLine("Invalid input! Please enter a valid number of players (at least 1).");
+                            isValidInput = false;  // Reset isValidInput to false for re-entry
                         }
                     }
-                    else
+
+                    // Get player names
+                    for (int i = 1; i <= numberOfPlayers; i++)
                     {
-                        Console.WriteLine("Invalid input! Please enter a valid number.");
+                        Console.Write($"Enter the name of player {i}: ");
+                        string playerName = Console.ReadLine();
+                        players.Add(playerName);
                     }
                 }
-
-                // Ask the player if he wants to play again and validate if the response is valid
-                string playAgainInput = "";
-                while (playAgainInput != "y" && playAgainInput != "n")
+                else
                 {
-                    Console.Write("\n" + username + ", do you want to play again? (y/n): ");
-                    playAgainInput = Console.ReadLine().ToLower(); // Convert to lowercase
-
-                    if (playAgainInput != "y" & playAgainInput != "n")
-                    {
-                        Console.WriteLine("Invalid input! Please enter 'y' or 'n'.");
-                    }
-                }
-
-                if (playAgainInput == "n")
-                {
-                    playAgain = false;
-                    Console.WriteLine("Thanks " + username + " for playing! Goodbye.\nComing soon a multiplayer version!");
+                    // If the user didn't choose valid mode, this message should appear and ask the player to enter a valid game mode
+                    ShowMessageToPlayer(ConsoleColor.Yellow, "Invalid choice! Please choose 's' for single-player or 'm' for multiplayer.");
                 }
             }
-            while (playAgain); // Loop again if the player wants to play again
+
+            // Ask for a random range for the mystery number (this could be modified for specific rules)
+            Random rand = new Random();
+            int minRange = rand.Next(1, 51); // Random min range between 1 and 50
+            int maxRange = rand.Next(minRange + 50, minRange + 101); // Random max range, ensuring it is larger than min range
+
+            // Play the game for the current set of players with the chosen range
+            PlayGame(players, minRange, maxRange);
+
+            // Ask if they want to play again
+            Console.Write("\nDo you want to play again? (y/n): ");
+            string playAgainInput = Console.ReadLine().ToLower();
+
+            if (playAgainInput != "y")
+            {
+                playAgain = false; // Exit the game loop
+                Console.WriteLine("Thanks for playing! Goodbye!");
+            }
+            else
+            {
+                Console.WriteLine("\nA new game is starting...\n");
+            }
         }
         Console.ReadLine();
     }
